@@ -1,0 +1,9 @@
+parameters:
+	typeAliases:
+		pamald-npm-dependency-type: '"dependencies"|"optionalDependencies"|"peerDependencies"|"devDependencies"'
+		pamald-npm-relationship: '''
+			array{
+				type: pamald-npm-dependency-type,
+				versionConstraint: string,
+			}
+		'''

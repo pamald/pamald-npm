@@ -1,0 +1,38 @@
+### Common.
+/.cache/
+/reports/
+
+
+### Composer.
+/vendor/
+/pamald-pamald-npm-*.tar
+/pamald-pamald-npm-*.tar.gz
+/pamald-pamald-npm-*.tar.bz2
+/pamald-pamald-npm-*.tgz
+/pamald-pamald-npm-*.zip
+
+
+### Composer Suite.
+/.composer-suite/
+/composer.*.json
+/composer.*.lock
+
+
+### sweetchuck/git-hooks.
+/.git-hooks.local
+
+
+### Robo.
+/robo.yml
+
+
+### PHPCS.
+/phpcs.xml
+
+
+### PHPStan.
+/phpstan.neon
+
+
+### PHPUnit.
+/phpunit.xml
