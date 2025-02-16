@@ -6,10 +6,12 @@ namespace Pamald\PamaldNpm\Tests\Unit;
 
 use Pamald\PamaldNpm\NormalPackage;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 
 #[CoversClass(NormalPackage::class)]
 class NormalPackageTest extends TestBase
 {
+    #[Test]
     public function testGetters(): void
     {
         $name = 'my-pack1';

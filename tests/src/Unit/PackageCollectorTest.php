@@ -7,6 +7,7 @@ namespace Pamald\PamaldNpm\Tests\Unit;
 use Pamald\PamaldNpm\PackageCollector;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 
 #[CoversClass(PackageCollector::class)]
 class PackageCollectorTest extends TestBase
@@ -25,6 +26,7 @@ class PackageCollectorTest extends TestBase
         ];
     }
 
+    #[Test]
     #[DataProvider('casesParseLockKey')]
     public function testParseLockKey(string $expected, string $lockKey): void
     {
@@ -71,6 +73,7 @@ class PackageCollectorTest extends TestBase
      * @param array<string, mixed> $lock
      * @param null|array<string, mixed> $json
      */
+    #[Test]
     #[DataProvider('casesCollect')]
     public function testCollect(array $expected, array $lock, ?array $json): void
     {

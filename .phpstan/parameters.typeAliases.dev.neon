@@ -3,7 +3,7 @@ parameters:
 		php-executable: '''
 			array{
 				enabled: bool,
-				command: string,
+				command: array<string>,
 				envVars?: array<string, ?string>,
 			}
 		'''

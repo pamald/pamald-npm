@@ -11,6 +11,7 @@ use Pamald\PamaldNpm\NormalPackage;
 use Pamald\PamaldNpm\PackageCollector;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use Sweetchuck\Utils\Filter\CustomFilter;
 
 #[CoversClass(PackageCollector::class)]
@@ -111,6 +112,7 @@ class ConsoleTableReporterTest extends TestBase
      * @param null|array<string, mixed> $rightJson
      * @phpstan-param pamald-console-table-reporter-options $options
      */
+    #[Test]
     #[DataProvider('casesGenerate')]
     public function testGenerate(
         string $expected,

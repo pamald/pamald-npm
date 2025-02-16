@@ -67,7 +67,7 @@ commands:
                 run:
                     name: 'Composer - install'
                     command: >
-                        composer install --ansi --no-progress
+                        composer install --no-progress --ansi
 
             -
                 save_cache:
@@ -91,7 +91,7 @@ commands:
         steps:
             -
                 run:
-                    name: 'Test - Unit'
+                    name: 'Test - unit'
                     command: |
                         "$(composer config 'bin-dir')/robo" --ansi test 'unit'
             -
