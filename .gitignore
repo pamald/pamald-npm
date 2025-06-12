@@ -30,3 +30,4 @@
 
 ### PHPStan.
 /phpstan.neon
+/tests/src/Phpstan.php

@@ -4,18 +4,19 @@ declare(strict_types = 1);
 
 namespace Pamald\PamaldNpm\Tests\Unit;
 
-use Pamald\Pamald\LockDiffEntry;
 use Pamald\Pamald\LockDiffer;
 use Pamald\Pamald\Reporter\ConsoleTableReporter;
-use Pamald\PamaldNpm\NormalPackage;
-use Pamald\PamaldNpm\PackageCollector;
+use Pamald\PamaldNpm\PackageDependency;
+use Pamald\PamaldNpm\DependencyCollector;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
-use Sweetchuck\Utils\Filter\CustomFilter;
 
-#[CoversClass(PackageCollector::class)]
-#[CoversClass(NormalPackage::class)]
+/**
+ * @phpstan-import-type PamaldConsoleTableReporterOptions from \Pamald\Pamald\Phpstan
+ */
+#[CoversClass(DependencyCollector::class)]
+#[CoversClass(PackageDependency::class)]
 class ConsoleTableReporterTest extends TestBase
 {
 
@@ -43,64 +44,24 @@ class ConsoleTableReporterTest extends TestBase
 
         return [
             'basic' => [
+                // phpcs:disable Generic.Files.LineLength.TooLong
                 'expected' => <<< 'TEXT'
-                    +---------------+-----------+-----------+----------------+----------------+---------+---------+
-                    | Name          | L Version | R Version | L Relationship | R Relationship | L Depth | R Depth |
-                    +---------------+-----------+-----------+----------------+----------------+---------+---------+
-                    | Direct prod                                                                                 |
-                    | find-versions | 5.0.0     | 5.1.0     | dependencies   | dependencies   | direct  | direct  |
-                    | Direct dev                                                                                  |
-                    | Other                                                                                       |
-                    | semver-regex  | 4.0.5     | 4.2.0     | ?              | ?              | child   | child   |
-                    +---------------+-----------+-----------+----------------+----------------+---------+---------+
+                    +---------------+-----------+-----------+---------+---------+----------+----------+------------+------------+---------+---------+
+                    | Name          | L Version | R Version | L Type  | R Type  | L Link   | R Link   | L Env      | R Env      | L Depth | R Depth |
+                    +---------------+-----------+-----------+---------+---------+----------+----------+------------+------------+---------+---------+
+                    | Production - Direct                                                                                                           |
+                    | find-versions | 5.0.0     | 5.1.0     | package | package | required | required | production | production | direct  | direct  |
+                    | Other                                                                                                                         |
+                    | semver-regex  | 4.0.5     | 4.2.0     | package | package |          |          |            |            | child   | child   |
+                    +---------------+-----------+-----------+---------+---------+----------+----------+------------+------------+---------+---------+
 
                     TEXT,
+                // phpcs:enable Generic.Files.LineLength.TooLong
                 'leftLock' => json_decode(file_get_contents("$projectDir/01-lock.json") ?: '{}', true),
                 'leftJson' => json_decode(file_get_contents("$projectDir/01.json") ?: '{}', true),
                 'rightLock' => json_decode(file_get_contents("$projectDir/02-lock.json") ?: '{}', true),
                 'rightJson' => json_decode(file_get_contents("$projectDir/02.json") ?: '{}', true),
-                'options' => [
-                    'groups' => [
-                        'direct-prod' => [
-                            'enabled' => true,
-                            'id' => 'direct-prod',
-                            'title' => 'Direct prod',
-                            'weight' => 0,
-                            'showEmpty' => false,
-                            'emptyContent' => '-- empty --',
-                            'filter' => (new CustomFilter())
-                                ->setOperator(function (LockDiffEntry $entry): bool {
-                                    return $entry->right?->isDirectDependency()
-                                        && $entry->right->typeOfRelationship() === 'dependencies';
-                                }),
-                            'comparer' => null,
-                        ],
-                        'direct-dev' => [
-                            'enabled' => true,
-                            'id' => 'direct-dev',
-                            'title' => 'Direct dev',
-                            'weight' => 1,
-                            'showEmpty' => false,
-                            'emptyContent' => '-- empty --',
-                            'filter' => (new CustomFilter())
-                                ->setOperator(function (LockDiffEntry $entry): bool {
-                                    return $entry->right?->isDirectDependency()
-                                        && $entry->right->typeOfRelationship() === 'devDependencies';
-                                }),
-                            'comparer' => null,
-                        ],
-                        'other' => [
-                            'enabled' => true,
-                            'id' => 'other',
-                            'title' => 'Other',
-                            'weight' => 999,
-                            'showEmpty' => false,
-                            'emptyContent' => '-- empty --',
-                            'filter' => null,
-                            'comparer' => null,
-                        ],
-                    ],
-                ],
+                'options' => [],
             ],
         ];
     }
@@ -110,7 +71,7 @@ class ConsoleTableReporterTest extends TestBase
      * @param null|array<string, mixed> $leftJson
      * @param null|array<string, mixed> $rightLock
      * @param null|array<string, mixed> $rightJson
-     * @phpstan-param pamald-console-table-reporter-options $options
+     * @phpstan-param PamaldConsoleTableReporterOptions $options
      */
     #[Test]
     #[DataProvider('casesGenerate')]
@@ -127,7 +88,7 @@ class ConsoleTableReporterTest extends TestBase
         }
         $this->streams[] = $options['stream'];
 
-        $packageCollector = new PackageCollector();
+        $packageCollector = new DependencyCollector();
         $differ = new LockDiffer();
         $entries = $differ->diff(
             $packageCollector->collect($leftLock, $leftJson),

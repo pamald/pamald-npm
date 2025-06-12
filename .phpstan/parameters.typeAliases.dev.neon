@@ -7,7 +7,7 @@ parameters:
 				envVars?: array<string, ?string>,
 			}
 		'''
-		dummy-package-values: '''
+		dummy-dependency-values: '''
 			array{
 				name: string,
 				type?: null|string,
